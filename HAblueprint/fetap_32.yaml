@@ -1,0 +1,233 @@
+blueprint:
+  name: FeTAP 32 Wählscheibe
+  description: >
+    Blueprint für das ESPHome-Projekt [lspr98/fetap-32](https://github.com/lspr98/fetap-32).
+    Führt Aktionen basierend auf der gewählten Nummer der Wählscheibe aus.
+  domain: automation
+  input:
+    dial_sensor:
+      name: Wählscheiben Sensor
+      description: Wähle die rotary_dial Entität aus dem Dropdown.
+      selector:
+        entity:
+          domain: sensor
+          
+    # --- BEREICH 1: EINZELNE ZIFFERN ---
+    single_digits:
+      name: Einzelne Ziffern (0-9)
+      description: Definiere hier die Aktionen, die bei der Wahl der Ziffern 0 bis 9 ausgeführt werden sollen.
+      collapsed: true
+      input:
+        action_0:
+          name: Aktion für '0'
+          default: []
+          selector:
+            action: {}
+        action_1:
+          name: Aktion für '1'
+          default: []
+          selector:
+            action: {}
+        action_2:
+          name: Aktion für '2'
+          default: []
+          selector:
+            action: {}
+        action_3:
+          name: Aktion für '3'
+          default: []
+          selector:
+            action: {}
+        action_4:
+          name: Aktion für '4'
+          default: []
+          selector:
+            action: {}
+        action_5:
+          name: Aktion für '5'
+          default: []
+          selector:
+            action: {}
+        action_6:
+          name: Aktion für '6'
+          default: []
+          selector:
+            action: {}
+        action_7:
+          name: Aktion für '7'
+          default: []
+          selector:
+            action: {}
+        action_8:
+          name: Aktion für '8'
+          default: []
+          selector:
+            action: {}
+        action_9:
+          name: Aktion für '9'
+          default: []
+          selector:
+            action: {}
+
+    # --- BEREICH 2: MEHRSTELLIGE ZAHLEN ---
+    custom_numbers:
+      name: Eigene mehrstellige Zahlen
+      description: Definiere hier bis zu 5 eigene Zahlenkombinationen (z.B. 112, 1337).
+      collapsed: true
+      input:
+        custom_number_1:
+          name: Nummer 1
+          default: ""
+          selector:
+            text: {}
+        action_custom_1:
+          name: Aktion für Nummer 1
+          default: []
+          selector:
+            action: {}
+            
+        custom_number_2:
+          name: Nummer 2
+          default: ""
+          selector:
+            text: {}
+        action_custom_2:
+          name: Aktion für Nummer 2
+          default: []
+          selector:
+            action: {}
+
+        custom_number_3:
+          name: Nummer 3
+          default: ""
+          selector:
+            text: {}
+        action_custom_3:
+          name: Aktion für Nummer 3
+          default: []
+          selector:
+            action: {}
+
+        custom_number_4:
+          name: Nummer 4
+          default: ""
+          selector:
+            text: {}
+        action_custom_4:
+          name: Aktion für Nummer 4
+          default: []
+          selector:
+            action: {}
+
+        custom_number_5:
+          name: Nummer 5
+          default: ""
+          selector:
+            text: {}
+        action_custom_5:
+          name: Aktion für Nummer 5
+          default: []
+          selector:
+            action: {}
+
+    # --- FALLBACK (Unterhalb der Bereiche) ---
+    fallback_action:
+      name: Standard-Aktion (Undefinierte Zahlen)
+      description: Wird ausgelöst, wenn eine positive Zahl gewählt wurde, für die oben KEINE Aktion definiert ist.
+      default: []
+      selector:
+        action: {}
+
+# --- AUTOMATISIERUNGS-LOGIK ---
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input dial_sensor
+
+condition:
+  # Filtert den Leerlauf-Wert (-1) sowie Neustart-Werte (unknown/unavailable) heraus.
+  # Die Aktion wird nur ausgelöst, wenn der Sensor eine valide Zahl ausgibt.
+  - condition: template
+    value_template: >
+      {{ trigger.to_state is not none and
+         trigger.to_state.state not in ['-1', 'unknown', 'unavailable'] and
+         (trigger.to_state.state | int(-1)) >= 0 }}
+
+# Variablen für die Templates (notwendig, um !input innerhalb von Jinja2 Templates abfragen zu können)
+variables:
+  c_num_1: !input custom_number_1
+  c_num_2: !input custom_number_2
+  c_num_3: !input custom_number_3
+  c_num_4: !input custom_number_4
+  c_num_5: !input custom_number_5
+
+action:
+  - choose:
+      # Prüfung der Ziffern 0-9
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '0' }}"
+        sequence: !input action_0
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '1' }}"
+        sequence: !input action_1
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '2' }}"
+        sequence: !input action_2
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '3' }}"
+        sequence: !input action_3
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '4' }}"
+        sequence: !input action_4
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '5' }}"
+        sequence: !input action_5
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '6' }}"
+        sequence: !input action_6
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '7' }}"
+        sequence: !input action_7
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '8' }}"
+        sequence: !input action_8
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == '9' }}"
+        sequence: !input action_9
+
+      # Prüfung der eigenen, mehrstelligen Zahlen
+      - conditions:
+          - condition: template
+            value_template: "{{ c_num_1 | string != '' and trigger.to_state.state == c_num_1 | string }}"
+        sequence: !input action_custom_1
+      - conditions:
+          - condition: template
+            value_template: "{{ c_num_2 | string != '' and trigger.to_state.state == c_num_2 | string }}"
+        sequence: !input action_custom_2
+      - conditions:
+          - condition: template
+            value_template: "{{ c_num_3 | string != '' and trigger.to_state.state == c_num_3 | string }}"
+        sequence: !input action_custom_3
+      - conditions:
+          - condition: template
+            value_template: "{{ c_num_4 | string != '' and trigger.to_state.state == c_num_4 | string }}"
+        sequence: !input action_custom_4
+      - conditions:
+          - condition: template
+            value_template: "{{ c_num_5 | string != '' and trigger.to_state.state == c_num_5 | string }}"
+        sequence: !input action_custom_5
+
+    # Die Standard-Aktion, falls keine der obigen Bedingungen zutrifft (und die Zahl positiv war)
+    default: !input fallback_action
