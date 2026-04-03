@@ -14,6 +14,10 @@ Changes:
 - Changed pinout!
   - Rotary Sensor -> D0
   - Handset-sensor -> D6
+
+I've also created a blueprint for your Home Assistant.
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FEckeFL%2Ffetap-32-for-ESP32-S3%2Fblob%2Fmain%2FHAblueprint%2Ffetap_32.yaml)
   
 ## Description
 FeTAp-32 is an open-source project that turns an old FeTAp 611-2 (Fernsprechtischapparat) into a voice assistant device through an ESP32-S3 and [esphome](https://esphome.io/).
