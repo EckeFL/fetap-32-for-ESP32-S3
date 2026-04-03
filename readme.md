@@ -5,9 +5,16 @@
   <source srcset="doc/images/fetap32-logo-text-white.svg"  media="(prefers-color-scheme: dark)"/>
   <img src="doc/images/fetap32-logo-text-black.svg" width="100%"/>
 </picture>
+## Fork
 
+This is a fork of [lspr98/fetap-32](https://github.com/lspr98/fetap-32). 
+It is tested with esphome 2026.3.2
+Changes:
+- fetap_microphone and fetap_speaker replaced with native i2S_audio
+- changed pinout! Rotary Sensor -> D0 handset-sensor -> D6
+  
 ## Description
-FeTAp-32 is an open-source project that turns an old FeTAp 611-2 (Fernsprechtischapparat) into a voice assistant device through an ESP32-C3 and [esphome](https://esphome.io/).
+FeTAp-32 is an open-source project that turns an old FeTAp 611-2 (Fernsprechtischapparat) into a voice assistant device through an ESP32-S3 and [esphome](https://esphome.io/).
 
 ## Features
 - Fully functional rotary dial with customizable automations for each digit
@@ -39,7 +46,7 @@ The following items are necessary to build the FeTAp-32. Items marked with a (*)
 |Item|Amount|Description|Comment|Sourcing (DE)|
 |---|---|---|---|---|
 |FeTAp 611-2|1|the telephone|Commonly found on kleinanzeigen for cheap. Doesn't have to be functional as the ESP will replace the PCB.|-|
-|Seeed Xiao ESP32C3|1|Modem and microcontroller|-|[Botland](https://botland.de/wifi-und-bt-module-esp32/21859-seeed-xiao-esp32-c3-wlan-bluetooth-seeedstudio-113991054.html) [Reichelt](https://www.reichelt.de/de/de/shop/produkt/xiao_esp32c3_wifi_bt-358356?search=esp32c3&)|
+|Seeed Xiao ESP32S3|1|Modem and microcontroller|-|[Botland](https://botland.de/wifi-und-bt-module-esp32/22878-seeed-xiao-esp32-s3-wifi-bluetooth-seeedstudio-113991114.html)) [Reichelt](https://www.reichelt.de/de/de/shop/produkt/xiao_esp32s3_dual-core_wifi_bt5_0_ohne_header-358354)|
 |Adafruit USB Type-C Breakout Board (ADA4090)|1|port for power over USB-C|-|[Berrybase](https://www.berrybase.de/adafruit-usb-type-c-breakout-board-downstream-verbindung)|
 |Stranded Wire|~2m|wire to connect the components with each other|I recommend stranded wires and getting multiple colors to make it easier. The wires I used were multi-stranded with 0.14mm^2 diameter (approx. 25 AWG)|[Reichelt](https://www.reichelt.de/de/de/shop/produkt/kupferlitze_isoliert_10_m_1_x_0_14_mm_blau-10292)|
 |INMP441 MEMS Microphone|1|digital microphone to capture voice commands|Optional, if you don't want voice assistant capabilities (e.g. only want to use the rotary dial)|[Berrybase](https://www.berrybase.de/inmp441-mems-omnidirektionales-mikrofonmodul-i2s-interface)|
