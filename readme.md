@@ -11,7 +11,9 @@ This is a fork of [lspr98/fetap-32](https://github.com/lspr98/fetap-32).
 It is tested with esphome 2026.3.2
 Changes:
 - fetap_microphone and fetap_speaker replaced with native i2S_audio
-- changed pinout! Rotary Sensor -> D0 handset-sensor -> D6
+- Changed pinout!
+  - otary Sensor -> D0
+  - handset-sensor -> D6
   
 ## Description
 FeTAp-32 is an open-source project that turns an old FeTAp 611-2 (Fernsprechtischapparat) into a voice assistant device through an ESP32-S3 and [esphome](https://esphome.io/).
