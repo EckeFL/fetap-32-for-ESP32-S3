@@ -18,6 +18,9 @@ Changes:
 ## Description
 FeTAp-32 is an open-source project that turns an old FeTAp 611-2 (Fernsprechtischapparat) into a voice assistant device through an ESP32-S3 and [esphome](https://esphome.io/).
 
+Timing is very important for the speed sensor. If you experience problems with the speed sensor, such as readings that are too high or too low, 
+carefully clean all mechanical parts and repeat the test.
+
 ## Features
 - Fully functional rotary dial with customizable automations for each digit
 - Power delivery through USB-C, network connectivity through Wifi 2.4 GHz
