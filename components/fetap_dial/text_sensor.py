@@ -13,7 +13,7 @@ FetapDialSensor = fetap_ns.class_(
 
 CONFIG_SCHEMA = text_sensor.text_sensor_schema(FetapDialSensor).extend(
     {
-        cv.Required(CONF_DIAL_PIN): pins.internal_gpio_output_pin_number,
+        cv.Required(CONF_DIAL_PIN): pins.internal_gpio_input_pin_number,
         cv.Optional(CONF_DIAL_TIMEOUT, default=0): cv.int_range(min=0, max=1000000)
     }
 ).extend(cv.COMPONENT_SCHEMA)
