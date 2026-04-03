@@ -66,7 +66,7 @@ private:
     */
     void publish_number(void);
 
-    static constexpr uint16_t kPulseOpenMilliseconds{60}; /*!< Duration for which the sensor contact is open during each pulse */
+    static constexpr uint16_t kPulseOpenMilliseconds{48}; /*!< Duration for which the sensor contact is open during each pulse */
     static constexpr uint16_t kPulseClosedMilliseconds{40}; /*!< Duration for which the sensor contact is closed during each pulse */
     static constexpr uint16_t kNumberDialGapMilliseconds{(kPulseOpenMilliseconds + kPulseClosedMilliseconds) * 2}; /*!< Minimum possible time between two consecutive dialed numbers */
     static constexpr uint16_t kSamplesPerPulse{6}; /*!< Number of times the sensor pin is sampled during the conact open period of a pulse */
