@@ -1,0 +1,127 @@
+esphome:
+  name: fetap32
+
+esp32:
+  board: seeed_xiao_esp32s3
+  variant: esp32s3
+  flash_size: 8MB
+  framework:
+    type: arduino
+
+# Hinweis: PSRAM wird unter Arduino automatisch erkannt, kein separater Block noetig
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: !secret ap_ssid
+    password: !secret ap_password
+
+captive_portal:
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/EckeFL/fetap-32-for-ESP32-S3
+      ref: main
+    components: [fetap_dial] 
+
+# -----------------------------------------------------------------------
+# I2S Audio
+# ADA5769 direkt auf XIAO ESP32-S3 aufgesteckt:
+#   A1 (D1 = GPIO2) -> DAT  (Audio Data)
+#   A2 (D2 = GPIO3) -> LRC  (Wordselect Clock)
+#   A3 (D3 = GPIO4) -> BCLK (Bitclock)
+# INMP441 Mikrofon separat verdrahtet.
+# -----------------------------------------------------------------------
+i2s_audio:
+  - id: i2s_mic
+    i2s_lrclk_pin: GPIO7   # INMP441: WS  (D8)
+    i2s_bclk_pin: GPIO9    # INMP441: SCK (D10)
+
+  - id: i2s_amp
+    i2s_lrclk_pin: GPIO3   # ADA5769: LRC (A2/D2)
+    i2s_bclk_pin: GPIO4    # ADA5769: BCLK (A3/D3)
+
+# I2S Mikrofon (INMP441)
+microphone:
+  - platform: i2s_audio
+    id: fetap_in
+    i2s_audio_id: i2s_mic
+    i2s_din_pin: GPIO8     # INMP441: SD  (D9)
+    adc_type: external
+    pdm: false
+    channel: left
+    bits_per_sample: 16bit
+
+# I2S Media Player (ADA5769) - wird in Voice Assistant und Home Assistant genutzt
+media_player:
+  - platform: i2s_audio
+    id: fetap_out
+    name: "FeTAp Speaker"
+    i2s_audio_id: i2s_amp
+    dac_type: external
+    i2s_dout_pin: GPIO2    # ADA5769: DAT (A1/D1)
+
+# -----------------------------------------------------------------------
+# Voice Assistant
+# -----------------------------------------------------------------------
+voice_assistant:
+  microphone:
+    microphone: fetap_in
+    channels: 0
+    gain_factor: 2
+  media_player: fetap_out
+  use_wake_word: false
+  id: fetap_assist
+  noise_suppression_level: 4
+  auto_gain: 31dBFS
+  volume_multiplier: 1.0
+
+# -----------------------------------------------------------------------
+# Wählscheiben-Sensor
+# -----------------------------------------------------------------------
+text_sensor:
+  - platform: fetap_dial
+    id: fetap_rotary_sensor
+    name: fetap_rotary_sensor
+    dial_pin: GPIO1   # D0
+    dial_timeout: 3000
+    on_value:
+      - then:
+          - delay: 1s
+          - lambda: |-
+              if (id(fetap_rotary_sensor).state != "-1")
+                id(fetap_rotary_sensor).publish_state("-1");
+
+# -----------------------------------------------------------------------
+# Hörer-Sensor
+# ACHTUNG: Abweichung von der Original-Anleitung!
+# Im Original ist der Hörer an D4 (GPIO5). Beim ESP32-S3 mit aufgestecktem
+# ADA5769 sind D1-D3 durch den Verstärker belegt. Daher Hörer auf D6 (GPIO43).
+# -----------------------------------------------------------------------
+binary_sensor:
+  - platform: gpio
+    id: fetap_handset_sensor
+    filters:
+      invert:
+    pin:
+      number: GPIO43  # D6 -- ACHTUNG: Abweichung von der Original-Anleitung!
+      mode:
+        input: true
+        pullup: true
+    on_press:
+      - voice_assistant.start_continuous:
+    on_release:
+      - voice_assistant.stop:
