@@ -33,7 +33,7 @@ void FetapDialSensor::setup() {
     esp_err_t err;
 
     err = gpio_install_isr_service(0);
-    if (err != ESP_OK) {
+    if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "Error starting ISR service: %s", esp_err_to_name(err));
         mark_failed();
         status_set_error();
@@ -146,14 +146,22 @@ void FetapDialSensor::sample_rotary_dial(void) {
         // don't need to do anything.
         xTaskDelayUntil(&t_rotary_dial_interrupt, tick_delay_closed);
     }
-
+    
     if (counter < 0) {
         // No pulses detected
         return;
     }
+    
 
     // Convert pulses to the dialed digit as UTF-8 character
     const char dialed_digit = ((counter + 1) % 10) + 0x30;
+//    if (counter < 0) {
+//        // No pulses detected
+//        return;
+//    }
+//
+//    // Convert pulses to the dialed digit as UTF-8 character
+//    const char dialed_digit = ((counter + 1) % 10) + 0x30;
 
     // Add new digit to number
     dialed_number_ += std::string(1, dialed_digit);
