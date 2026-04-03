@@ -1,4 +1,4 @@
-# FeTAp-32
+# FeTAp-32 for ESP32 S3
 
 <picture>
   <source srcset="doc/images/fetap32-logo-text-black.svg" media="(prefers-color-scheme: light)"/>
