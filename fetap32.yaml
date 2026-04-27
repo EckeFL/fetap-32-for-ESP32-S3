@@ -15,6 +15,8 @@ esp32:
       CONFIG_SPIRAM_USE_MALLOC: "y"
       CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL: "16384"
       CONFIG_SPIRAM_ALLOW_BSS_SEG: "y"
+      CONFIG_I2S_ISR_IRAM_SAFE: "y"
+      CONFIG_I2S_SUPPRESS_DEPRECATE_WARN: "y"
  
 psram:
   mode: octal
@@ -22,7 +24,6 @@ psram:
   ignore_not_found: false
  
 logger:
-  level: VERBOSE
  
 api:
  
@@ -59,7 +60,7 @@ i2s_audio:
   - id: i2s_mic
     i2s_lrclk_pin: GPIO7   # INMP441: WS  (D8)
     i2s_bclk_pin: GPIO9    # INMP441: SCK (D10)
- 
+
   - id: i2s_amp
     i2s_lrclk_pin: GPIO3   # ADA5769: LRC (A2/D2)
     i2s_bclk_pin: GPIO4    # ADA5769: BCLK (A3/D3)
@@ -84,7 +85,7 @@ speaker:
     i2s_audio_id: i2s_amp
     dac_type: external
     i2s_dout_pin: GPIO2    # ADA5769: DAT (A1/D1)
-    sample_rate: 16000
+    sample_rate: 48000
  
   - platform: resampler
     id: fetap_ann_resampler
@@ -98,7 +99,8 @@ media_player:
   - platform: speaker
     id: fetap_mediaplayer
     name: "FeTAp Speaker"
-    buffer_size: 512000
+#    buffer_size: 512000
+    buffer_size: 65536
     task_stack_in_psram: true
     announcement_pipeline:
       speaker: fetap_ann_resampler
@@ -157,4 +159,3 @@ binary_sensor:
       - voice_assistant.start_continuous:
     on_release:
       - voice_assistant.stop:
- 
